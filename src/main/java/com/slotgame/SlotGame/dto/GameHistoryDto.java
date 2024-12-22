@@ -27,6 +27,9 @@ public class GameHistoryDto {
         this.currentbalance = currentbalance;
     }
 
+    public GameHistoryDto(String username) {
+        this.username = username;
+    }
 
     public Long getHistoryId() {
         return historyId;

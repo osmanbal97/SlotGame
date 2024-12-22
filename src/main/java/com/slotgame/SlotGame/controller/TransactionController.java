@@ -18,7 +18,7 @@ public class TransactionController {
     @PutMapping("/topup-balance")
     public ResponseEntity<?> TopUpBalance(@RequestBody TopUpRequestDto user){
         try {
-            userService.TopUpRequest(user);
+            userService.TopUpRequest(user.getUsername(),user.getAmount());
             return ResponseEntity.ok(user);
         } catch (NoSuchElementException e) {
             throw new NoSuchElementException("Top up için böyle bir kullanıcı yok!");

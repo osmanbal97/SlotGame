@@ -1,19 +1,34 @@
 package com.slotgame.SlotGame.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.math.BigDecimal;
 
 public class TopUpRequestDto {
     private Long id;
     private String username;
     private BigDecimal balance;
+    private double amount;
 
-    public TopUpRequestDto() {
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public TopUpRequestDto(Long id, String username, BigDecimal balance) {
-        this.id = id;
+    public double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(double amount) {
+        this.amount = amount;
+    }
+
+    public TopUpRequestDto(String username) {
         this.username = username;
-        this.balance = balance;
+    }
+
+    public TopUpRequestDto(@JsonProperty("username") String username,
+                           @JsonProperty("amount") double amount) {
+        this.username = username;
+        this.amount = amount;
     }
 
     public Long getId() {
