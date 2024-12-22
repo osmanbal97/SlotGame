@@ -63,12 +63,15 @@ public class GameServiceImpl implements GameService {
             gameHistory.setUser(user);
             gameHistory.setGame(game);
             gameHistory.setPlayDate(LocalDateTime.now());
+            gameHistory.setBetamount(BigDecimal.valueOf(playGameRequest.getBetamount()));
             gameHistory.setWinamount(BigDecimal.valueOf(winamount));
             gameHistoryRepository.save(gameHistory);
 
             BigDecimal newbalance = user.getBalance().add(BigDecimal.valueOf(winamount));
             user.setBalance(newbalance);
             userRepository.save(user);
+            gameHistory.setCurrentbalance(user.getBalance());
+            gameHistoryRepository.save(gameHistory);
 
             System.out.println("Tebrikler Kazandınız!");
             System.out.println("Kullanıcı: " + user.getUsername());
@@ -79,12 +82,15 @@ public class GameServiceImpl implements GameService {
             gameHistory.setUser(user);
             gameHistory.setGame(game);
             gameHistory.setPlayDate(LocalDateTime.now());
+            gameHistory.setBetamount(BigDecimal.valueOf(playGameRequest.getBetamount()));
             gameHistory.setWinamount(BigDecimal.valueOf(0.0));
-            gameHistoryRepository.save(gameHistory);
+
 
             BigDecimal newbalance = user.getBalance().subtract(BigDecimal.valueOf(playGameRequest.getBetamount()));
             user.setBalance(newbalance);
             userRepository.save(user);
+            gameHistory.setCurrentbalance(user.getBalance());
+            gameHistoryRepository.save(gameHistory);
 
             System.out.println("Tekrar Deneyin!");
             System.out.println("Kullanıcı: " + user.getUsername());

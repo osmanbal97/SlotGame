@@ -1,6 +1,6 @@
 package com.slotgame.SlotGame.dto;
 
-import lombok.NoArgsConstructor;
+
 
 import java.math.BigDecimal;
 

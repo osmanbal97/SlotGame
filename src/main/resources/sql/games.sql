@@ -13,6 +13,9 @@ CREATE TABLE IF NOT EXISTS game_history (
                                             history_id SERIAL PRIMARY KEY,
                                             user_id INT NOT NULL,
                                             game_id INT NOT NULL,
+                                            bet_amount DECIMAL(3,2) NOT NULL ,
+                                            winamount DECIMAL(3,2) NOT NULL,
+                                            currentbalance DECIMAL(3,2) NOT NULL,
                                             play_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                                             FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
                                             FOREIGN KEY (game_id) REFERENCES games(game_id) ON DELETE CASCADE
@@ -32,3 +35,5 @@ select * from game_history;
 
 ALTER TABLE game_history
     ADD COLUMN winAmount DECIMAL(10, 2);
+
+select * from game_history;

@@ -1,13 +1,14 @@
 package com.slotgame.SlotGame.service;
 
 import com.slotgame.SlotGame.dto.BalanceResponseDto;
-import com.slotgame.SlotGame.dto.UserDto;
-import com.slotgame.SlotGame.entity.UserEntity;
-import org.apache.catalina.User;
+import com.slotgame.SlotGame.dto.GameHistoryDto;
+import com.slotgame.SlotGame.dto.TopUpRequestDto;
+import java.util.List;
 
 public interface UserService {
     BalanceResponseDto RetrieveUserBalance(BalanceResponseDto user);
-    User getGameHistory(UserDto username);
+    TopUpRequestDto TopUpRequest(TopUpRequestDto user);
+    List<GameHistoryDto> gameHistory(GameHistoryDto user);
 
 
 }

@@ -2,15 +2,13 @@ package com.slotgame.SlotGame.controller;
 
 import com.slotgame.SlotGame.dto.BalanceResponseDto;
 import com.slotgame.SlotGame.dto.GameHistoryDto;
+import com.slotgame.SlotGame.dto.TopUpRequestDto;
 import com.slotgame.SlotGame.service.UserService;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.math.BigDecimal;
-import java.util.InputMismatchException;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
@@ -25,7 +23,6 @@ public class UserController {
             userService.RetrieveUserBalance(username);
             return ResponseEntity.ok(username);
         } catch (NoSuchElementException e) {
-            // Kullanıcı bulunamadığında uygun HTTP durum kodu ile hata döndürme
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new BalanceResponseDto("Error: Kullanıcı bulunamadı!", BigDecimal.ZERO));
         } catch (Exception e) {
@@ -35,9 +32,13 @@ public class UserController {
     }
 
     @GetMapping("/game-history/{username}")
-    public void getGameHistory(@PathVariable GameHistoryDto user, HttpServletResponse response) {
-
+    public ResponseEntity<List<GameHistoryDto>> getGameHistory(@PathVariable GameHistoryDto username) {
+        try {
+            List<GameHistoryDto> history = userService.gameHistory(username);
+            return ResponseEntity.ok(history);
+        } catch (Exception e) {
+            throw new NoSuchElementException("Böyle bir kullanıcı yok!");
+        }
     }
-
 
 }

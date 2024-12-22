@@ -2,12 +2,10 @@ package com.slotgame.SlotGame.controller;
 
 import com.slotgame.SlotGame.dto.GameListDto;
 import com.slotgame.SlotGame.dto.PlayGameRequest;
-import com.slotgame.SlotGame.entity.GameEntity;
 import com.slotgame.SlotGame.entity.UserEntity;
 import com.slotgame.SlotGame.service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,8 +19,6 @@ public class GameController {
     private UserEntity user;
     @Autowired
     private GameService gameService;
-
-
 
     @PostMapping("/play")
     public ResponseEntity<?> PlayGame(@RequestBody PlayGameRequest playGameRequest){

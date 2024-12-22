@@ -4,7 +4,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import org.hibernate.annotations.*;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -30,7 +29,30 @@ public class GameHistoryEntity {
     @Column(nullable = false,name= "play_date")
     private LocalDateTime playDate;
 
+    @Column(nullable = false, name="winamount")
     private BigDecimal winamount;
+
+    @Column(nullable = false, name="bet_amount")
+    private BigDecimal betamount;
+
+    @Column(nullable = false,name = "currentbalance")
+    private BigDecimal currentbalance;
+
+    public BigDecimal getCurrentbalance() {
+        return currentbalance;
+    }
+
+    public void setCurrentbalance(BigDecimal currentbalance) {
+        this.currentbalance = currentbalance;
+    }
+
+    public BigDecimal getBetamount() {
+        return betamount;
+    }
+
+    public void setBetamount(BigDecimal betamount) {
+        this.betamount = betamount;
+    }
 
     public BigDecimal getWinamount() {
         return winamount;

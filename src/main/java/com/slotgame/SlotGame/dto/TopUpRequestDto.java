@@ -7,6 +7,15 @@ public class TopUpRequestDto {
     private String username;
     private BigDecimal balance;
 
+    public TopUpRequestDto() {
+    }
+
+    public TopUpRequestDto(Long id, String username, BigDecimal balance) {
+        this.id = id;
+        this.username = username;
+        this.balance = balance;
+    }
+
     public Long getId() {
         return id;
     }
