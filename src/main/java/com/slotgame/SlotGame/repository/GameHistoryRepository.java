@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface GameHistoryRepository extends JpaRepository<GameHistoryDto, Long> {
+public interface GameHistoryRepository extends JpaRepository<GameHistoryEntity, Long> {
     List<GameHistoryDto> findGameHistoryEntitiesByUser_Username(String username);
 }

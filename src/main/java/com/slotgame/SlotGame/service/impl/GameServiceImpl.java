@@ -22,15 +22,10 @@ import java.util.stream.Collectors;
 public class GameServiceImpl implements GameService {
     @Autowired
     private GameRepository gameRepository;
-
-    private GameEntity gameEntity;
-
-    private UserEntity userEntity;
     @Autowired
     private UserRepository userRepository;
     @Autowired
     private GameHistoryRepository gameHistoryRepository;
-
 
 
     public List<GameListDto> getAllGames() {
@@ -65,7 +60,6 @@ public class GameServiceImpl implements GameService {
             gameHistory.setPlayDate(LocalDateTime.now());
             gameHistory.setBetamount(BigDecimal.valueOf(playGameRequest.getBetamount()));
             gameHistory.setWinamount(BigDecimal.valueOf(winamount));
-            gameHistoryRepository.save(gameHistory);
 
             BigDecimal newbalance = user.getBalance().add(BigDecimal.valueOf(winamount));
             user.setBalance(newbalance);
@@ -96,7 +90,6 @@ public class GameServiceImpl implements GameService {
             System.out.println("Kullanıcı: " + user.getUsername());
             System.out.println("Yeni bakiye: " + user.getBalance());
             System.out.println("Kazanma ihtimali: " + game.getWinRate());
-
 
         }
 

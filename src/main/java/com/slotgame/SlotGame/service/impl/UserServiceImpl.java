@@ -25,8 +25,6 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private GameRepository gameRepository;
-    @Autowired
     private GameHistoryRepository gameHistoryRepository;
 
     @Override

@@ -21,9 +21,9 @@ public class GameController {
     private GameService gameService;
 
     @PostMapping("/play")
-    public ResponseEntity<?> PlayGame(@RequestBody PlayGameRequest playGameRequest){
+    public ResponseEntity<PlayGameRequest> PlayGame(@RequestBody PlayGameRequest playGameRequest){
         gameService.Playgame(playGameRequest);
-        return ResponseEntity.ok(HttpStatus.OK);
+        return ResponseEntity.ok(playGameRequest);
     }
 
     @GetMapping("/available-games")
