@@ -30,10 +30,10 @@ public class UserController {
             return ResponseEntity.ok(retrieve);
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new BalanceResponseDto("Error: Kullanıcı bulunamadı!", BigDecimal.ZERO));
+                    .body(new BalanceResponseDto("Kullanıcı bulunamadı!", BigDecimal.ZERO));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new BalanceResponseDto("Error: Bir hata oluştu", BigDecimal.ZERO));
+                    .body(new BalanceResponseDto("Bir hata oluştu", BigDecimal.ZERO));
         }
     }
 

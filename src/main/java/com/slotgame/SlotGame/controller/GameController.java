@@ -28,8 +28,8 @@ public class GameController {
 
     @GetMapping("/available-games")
     public ResponseEntity<List<GameListDto>> getAvailableGames() {
-        List<GameListDto> games = gameService.getAllGames(); // Tüm oyunları al
-        return ResponseEntity.ok(games); // Listeyi döndür
+        List<GameListDto> games = gameService.getAllGames();
+        return ResponseEntity.ok(games);
     }
 
 }
