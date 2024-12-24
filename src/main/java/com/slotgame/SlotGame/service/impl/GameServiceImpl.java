@@ -1,8 +1,6 @@
 package com.slotgame.SlotGame.service.impl;
-
-
 import com.slotgame.SlotGame.dto.GameListDto;
-import com.slotgame.SlotGame.dto.PlayGameRequest;
+import com.slotgame.SlotGame.dto.PlayGameRequestDto;
 import com.slotgame.SlotGame.entity.GameEntity;
 import com.slotgame.SlotGame.entity.GameHistoryEntity;
 import com.slotgame.SlotGame.entity.UserEntity;
@@ -12,7 +10,6 @@ import com.slotgame.SlotGame.repository.UserRepository;
 import com.slotgame.SlotGame.service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -22,87 +19,79 @@ import java.util.stream.Collectors;
 public class GameServiceImpl implements GameService {
     @Autowired
     private GameRepository gameRepository;
+
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
-    private GameHistoryRepository gameHistoryRepository;
+    public GameHistoryRepository gameHistoryRepository;
 
 
     public List<GameListDto> getAllGames() {
-        List<GameEntity> gameEntities = gameRepository.findAll(); // Tüm oyunları al
+        List<GameEntity> gameEntities = gameRepository.findAll();
         return gameEntities.stream()
                 .map(game -> new GameListDto(
-                        game.getGameId(),
                         game.getGameName(),
                         game.getMinimumPlayAmount(),
                         game.getWinRate()
                 ))
-                .collect(Collectors.toList()); // Listeyi dön
+                .collect(Collectors.toList());
     }
 
     @Override
-    public void Playgame(PlayGameRequest playGameRequest) {
-        UserEntity user = userRepository.findByUsername(playGameRequest.getUsername())
+    public PlayGameRequestDto Playgame(PlayGameRequestDto playGameRequestDto) {
+        UserEntity user = userRepository.findByUsername(playGameRequestDto.getUsername())
                 .orElseThrow(() -> new RuntimeException("Kullanıcı bulunamadı"));
 
-
-        GameEntity game = gameRepository.findById(playGameRequest.getGame_Id())
+        GameEntity game = gameRepository.findById(playGameRequestDto.getGame_Id())
                 .orElseThrow(() -> new RuntimeException("Oyun bulunamadı"));
 
         boolean winner = isWinner(game.getWinRate().doubleValue());
+        BigDecimal oldbalance= user.getBalance();
+        double winAmount = winner ? CalculateWinAmount(playGameRequestDto.getBetamount(), game.getWinRate()) : 0.0;
+        BigDecimal newBalance = winner ? user.getBalance().add(BigDecimal.valueOf(winAmount)) : user.getBalance().subtract(BigDecimal.valueOf(playGameRequestDto.getBetamount()));
 
-        if (winner) {
-            double winamount = CalculateWinAmount(playGameRequest.getBetamount(), game.getWinRate());
+        user.setBalance(newBalance);
+        userRepository.save(user);
 
-            GameHistoryEntity gameHistory = new GameHistoryEntity();
-            gameHistory.setUser(user);
-            gameHistory.setGame(game);
-            gameHistory.setPlayDate(LocalDateTime.now());
-            gameHistory.setBetamount(BigDecimal.valueOf(playGameRequest.getBetamount()));
-            gameHistory.setWinamount(BigDecimal.valueOf(winamount));
-
-            BigDecimal newbalance = user.getBalance().add(BigDecimal.valueOf(winamount));
-            user.setBalance(newbalance);
-            userRepository.save(user);
-            gameHistory.setCurrentbalance(user.getBalance());
-            gameHistoryRepository.save(gameHistory);
-
-            System.out.println("Tebrikler Kazandınız!");
-            System.out.println("Kullanıcı: " + user.getUsername());
-            System.out.println("Yeni bakiye: " + user.getBalance());
-            System.out.println("Kazanma ihtimali: " + game.getWinRate());
-        }else{
-            GameHistoryEntity gameHistory = new GameHistoryEntity();
-            gameHistory.setUser(user);
-            gameHistory.setGame(game);
-            gameHistory.setPlayDate(LocalDateTime.now());
-            gameHistory.setBetamount(BigDecimal.valueOf(playGameRequest.getBetamount()));
-            gameHistory.setWinamount(BigDecimal.valueOf(0.0));
+        saveGameHistory(user, game, LocalDateTime.now(),
+                playGameRequestDto.getBetamount(), winAmount, newBalance);
 
 
-            BigDecimal newbalance = user.getBalance().subtract(BigDecimal.valueOf(playGameRequest.getBetamount()));
-            user.setBalance(newbalance);
-            userRepository.save(user);
-            gameHistory.setCurrentbalance(user.getBalance());
-            gameHistoryRepository.save(gameHistory);
+        PlayGameRequestDto response = new PlayGameRequestDto();
+        String status = winner ? "Kazandınız!" : "Kaybettiniz!";
+        response.setMessage(status);
+        response.setUsername(user.getUsername());
+        response.setGame_name(game.getGameName());
+        response.setBetamount(playGameRequestDto.getBetamount());
+        response.setWin_amount_result(winAmount);
+        response.setFinalbalance(newBalance.doubleValue());
 
-            System.out.println("Tekrar Deneyin!");
-            System.out.println("Kullanıcı: " + user.getUsername());
-            System.out.println("Yeni bakiye: " + user.getBalance());
-            System.out.println("Kazanma ihtimali: " + game.getWinRate());
-
-        }
-
+        return response;
     }
 
+    @Override
     public double CalculateWinAmount(double betamount, BigDecimal winrate) {
-
         if (betamount <0 || winrate.doubleValue() <=0 ) {
             throw new InputMismatchException("Veriler 0'dan büyük olmalıdır");
         }
-            return betamount * (1 /winrate.doubleValue());
-
+        return betamount * (1 /winrate.doubleValue());
     }
+
+    @Override
+    public void saveGameHistory(UserEntity user, GameEntity game, LocalDateTime playDate, double betAmount, double winAmount, BigDecimal currentBalance) {
+
+            GameHistoryEntity gameHistory = new GameHistoryEntity();
+            gameHistory.setUser(user);
+            gameHistory.setGame(game);
+            gameHistory.setPlayDate(playDate);
+            gameHistory.setBetamount(BigDecimal.valueOf(betAmount));
+            gameHistory.setWinamount(BigDecimal.valueOf(winAmount));
+            gameHistory.setCurrentbalance(currentBalance);
+            gameHistoryRepository.save(gameHistory);
+    }
+
+    @Override
     public boolean isWinner(double winRate) {
 
         double randomValue = Math.random();
@@ -110,3 +99,6 @@ public class GameServiceImpl implements GameService {
     }
 
 }
+
+
+

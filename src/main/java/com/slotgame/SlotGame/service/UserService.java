@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface UserService {
     BalanceResponseDto RetrieveUserBalance(BalanceResponseDto user);
-    void TopUpRequest(String username, double amount);
+    TopUpRequestDto TopUpRequest(String username, double amount);
 
 
 

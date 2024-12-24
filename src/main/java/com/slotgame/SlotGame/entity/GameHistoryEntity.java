@@ -38,6 +38,10 @@ public class GameHistoryEntity {
     @Column(nullable = false,name = "currentbalance")
     private BigDecimal currentbalance;
 
+    public GameHistoryEntity() {
+
+    }
+
     public BigDecimal getCurrentbalance() {
         return currentbalance;
     }
@@ -74,6 +78,14 @@ public class GameHistoryEntity {
         return game;
     }
 
+    public String getUserName() {
+        return user.getUsername();
+    }
+
+    public String getGameName() {
+        return game.getGameName();
+    }
+
     public LocalDateTime getPlayDate() {
         return playDate;
     }
@@ -92,5 +104,15 @@ public class GameHistoryEntity {
 
     public void setPlayDate(LocalDateTime playDate) {
         this.playDate = playDate;
+    }
+
+    public GameHistoryEntity(Long historyId, UserEntity user, GameEntity game, LocalDateTime playDate, BigDecimal winamount, BigDecimal betamount, BigDecimal currentbalance) {
+        this.historyId = historyId;
+        this.user = user;
+        this.game = game;
+        this.playDate = playDate;
+        this.winamount = winamount;
+        this.betamount = betamount;
+        this.currentbalance = currentbalance;
     }
 }

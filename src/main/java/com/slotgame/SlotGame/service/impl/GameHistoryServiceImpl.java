@@ -18,17 +18,18 @@ public class GameHistoryServiceImpl implements GameHistoryService {
 
 
     @Override
-    public List<GameHistoryDto> gameHistory(GameHistoryDto gameHistoryDto) {
-        List<GameHistoryEntity> gameHistoryEntities = gameHistoryRepository.getAllByUser_Username(gameHistoryDto.getUsername());
+    public List<GameHistoryDto> gameHistory(String username) {
+        List<GameHistoryEntity> gameHistoryEntities = gameHistoryRepository.getAllByUser_Username(username);
         return gameHistoryEntities.stream().map(gameHistoryDto1 -> new GameHistoryDto(
-                gameHistoryDto.getHistoryId(),
-                gameHistoryDto.getUsername(),
-                gameHistoryDto.getGame_name(),
-                gameHistoryDto.getPlayDate(),
-                gameHistoryDto.getWinamount(),
-                gameHistoryDto.getBetamount(),
-                gameHistoryDto.getCurrentbalance()
+                gameHistoryDto1.getHistoryId(),
+                gameHistoryDto1.getUserName(),
+                gameHistoryDto1.getGameName(),
+                gameHistoryDto1.getPlayDate(),
+                gameHistoryDto1.getWinamount(),
+                gameHistoryDto1.getBetamount(),
+                gameHistoryDto1.getCurrentbalance()
         )).collect(Collectors.toList());
     }
+
 
 }

@@ -34,11 +34,11 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new NoSuchElementException("User Not Found"));
         System.out.println("Username is: " + user.getUsername());
         System.out.println("Balance is: " + user.getBalance());
-        return balanceResponseDto;
+        return new  BalanceResponseDto(user.getUsername(), user.getBalance());
     }
 
     @Override
-    public void TopUpRequest(String username, double amount) {
+    public TopUpRequestDto TopUpRequest(String username, double amount) {
             UserEntity user = userRepository.findByUsername(username)
                     .orElseThrow(IllegalArgumentException::new);
             System.out.println("Yükleme öncesi bakiye: " + user.getBalance());
@@ -48,6 +48,8 @@ public class UserServiceImpl implements UserService {
             System.out.println("Kullanıcı adı: " + user.getUsername());
             System.out.println("Yükleme sonrası bakiye: " + user.getBalance());
             System.out.println("Yüklenen miktar: " + amount);
+            TopUpRequestDto topupuser = new TopUpRequestDto(user.getId(),user.getUsername(), amount,user.getBalance());
+            return topupuser;
 
     }
 

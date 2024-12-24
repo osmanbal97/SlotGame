@@ -26,8 +26,7 @@ public class UserController {
     @GetMapping("/balance")
     public ResponseEntity<BalanceResponseDto> RetrieveUserBalance(@RequestBody BalanceResponseDto balanceResponseDto) {
         try {
-            BalanceResponseDto retrieve = userService.RetrieveUserBalance(balanceResponseDto);
-            return ResponseEntity.ok(retrieve);
+            return ResponseEntity.ok(userService.RetrieveUserBalance(balanceResponseDto));
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new BalanceResponseDto("Kullanıcı bulunamadı!", BigDecimal.ZERO));
@@ -40,7 +39,7 @@ public class UserController {
     @GetMapping("/game-history/{username}")
     public ResponseEntity<List<GameHistoryDto>> getGameHistory(@PathVariable String username) {
         try {
-            List<GameHistoryDto> history = gameHistoryService.gameHistory(new GameHistoryDto(username));
+            List<GameHistoryDto> history = gameHistoryService.gameHistory(username);
             return ResponseEntity.ok(history);
         } catch (Exception e) {
             throw new NoSuchElementException("Böyle bir kullanıcı yok!");

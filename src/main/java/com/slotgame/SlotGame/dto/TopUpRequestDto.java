@@ -25,10 +25,13 @@ public class TopUpRequestDto {
         this.username = username;
     }
 
-    public TopUpRequestDto(@JsonProperty("username") String username,
-                           @JsonProperty("amount") double amount) {
+    public TopUpRequestDto(Long id,@JsonProperty("username") String username,
+                           @JsonProperty("amount") double amount,
+                           BigDecimal balance) {
+        this.id = id;
         this.username = username;
         this.amount = amount;
+        this.balance = balance;
     }
 
     public Long getId() {
