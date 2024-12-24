@@ -23,10 +23,10 @@ public class UserController {
     private UserService userService;
 
 
-    @GetMapping("/balance")
-    public ResponseEntity<BalanceResponseDto> RetrieveUserBalance(@RequestBody BalanceResponseDto balanceResponseDto) {
+    @GetMapping("/balance/{username}")
+    public ResponseEntity<BalanceResponseDto> RetrieveUserBalance(@PathVariable String username) {
         try {
-            return ResponseEntity.ok(userService.RetrieveUserBalance(balanceResponseDto));
+            return ResponseEntity.ok(userService.RetrieveUserBalance(username));
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new BalanceResponseDto("Kullanıcı bulunamadı!", BigDecimal.ZERO));

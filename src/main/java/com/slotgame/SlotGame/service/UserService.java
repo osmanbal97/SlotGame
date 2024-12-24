@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface UserService {
-    BalanceResponseDto RetrieveUserBalance(BalanceResponseDto user);
+    BalanceResponseDto RetrieveUserBalance(String username);
     TopUpRequestDto TopUpRequest(String username, double amount);
 
 

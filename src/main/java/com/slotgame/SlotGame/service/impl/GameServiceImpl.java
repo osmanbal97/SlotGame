@@ -41,33 +41,43 @@ public class GameServiceImpl implements GameService {
     @Override
     public PlayGameRequestDto Playgame(PlayGameRequestDto playGameRequestDto) {
         UserEntity user = userRepository.findByUsername(playGameRequestDto.getUsername())
-                .orElseThrow(() -> new RuntimeException("Kullanıcı bulunamadı"));
+                .orElseThrow(() -> new RuntimeException("Kullanıcı bulunamadı!"));
 
         GameEntity game = gameRepository.findById(playGameRequestDto.getGame_Id())
-                .orElseThrow(() -> new RuntimeException("Oyun bulunamadı"));
+                .orElseThrow(() -> new RuntimeException("Oyun bulunamadı!"));
 
-        boolean winner = isWinner(game.getWinRate().doubleValue());
-        BigDecimal oldbalance= user.getBalance();
-        double winAmount = winner ? CalculateWinAmount(playGameRequestDto.getBetamount(), game.getWinRate()) : 0.0;
-        BigDecimal newBalance = winner ? user.getBalance().add(BigDecimal.valueOf(winAmount)) : user.getBalance().subtract(BigDecimal.valueOf(playGameRequestDto.getBetamount()));
+        boolean isBalanceSufficient = user.getBalance().compareTo(BigDecimal.valueOf(playGameRequestDto.getBetamount())) >= 0;
 
-        user.setBalance(newBalance);
-        userRepository.save(user);
+        if (!isBalanceSufficient) {
+            throw new RuntimeException("Bakiye Yeterli Değil!");
+        } else if (playGameRequestDto.getBetamount() < game.getMinimumPlayAmount().doubleValue()){
+            throw new RuntimeException("Bet miktarı minimum oynama miktarından düşük!");
+        }else{
 
-        saveGameHistory(user, game, LocalDateTime.now(),
-                playGameRequestDto.getBetamount(), winAmount, newBalance);
+            boolean winner = isWinner(game.getWinRate().doubleValue());
+            BigDecimal oldbalance = user.getBalance();
+            double winAmount = winner ? CalculateWinAmount(playGameRequestDto.getBetamount(), game.getWinRate()) : 0.0;
+            BigDecimal newBalance = winner ? user.getBalance().add(BigDecimal.valueOf(winAmount)) : user.getBalance().subtract(BigDecimal.valueOf(playGameRequestDto.getBetamount()));
+
+            user.setBalance(newBalance);
+            userRepository.save(user);
+
+            saveGameHistory(user, game, LocalDateTime.now(),
+                    playGameRequestDto.getBetamount(), winAmount, newBalance);
 
 
-        PlayGameRequestDto response = new PlayGameRequestDto();
-        String status = winner ? "Kazandınız!" : "Kaybettiniz!";
-        response.setMessage(status);
-        response.setUsername(user.getUsername());
-        response.setGame_name(game.getGameName());
-        response.setBetamount(playGameRequestDto.getBetamount());
-        response.setWin_amount_result(winAmount);
-        response.setFinalbalance(newBalance.doubleValue());
+            PlayGameRequestDto response = new PlayGameRequestDto();
+            String status = winner ? "Kazandınız!" : "Kaybettiniz!";
+            response.setMessage(status);
+            response.setUsername(user.getUsername());
+            response.setGame_name(game.getGameName());
+            response.setBetamount(playGameRequestDto.getBetamount());
+            response.setWin_amount_result(winAmount);
+            response.setFinalbalance(newBalance.doubleValue());
 
-        return response;
+            return response;
+        }
+
     }
 
     @Override

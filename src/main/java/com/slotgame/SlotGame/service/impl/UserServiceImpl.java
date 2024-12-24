@@ -29,9 +29,9 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public BalanceResponseDto RetrieveUserBalance(BalanceResponseDto balanceResponseDto) {
-        UserEntity user = userRepository.findByUsername(balanceResponseDto.getUsername())
-                .orElseThrow(() -> new NoSuchElementException("User Not Found"));
+    public BalanceResponseDto RetrieveUserBalance(String username) {
+        UserEntity user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new NoSuchElementException("Kullanıcı Bulunamadı!"));
         System.out.println("Username is: " + user.getUsername());
         System.out.println("Balance is: " + user.getBalance());
         return new  BalanceResponseDto(user.getUsername(), user.getBalance());
@@ -40,16 +40,20 @@ public class UserServiceImpl implements UserService {
     @Override
     public TopUpRequestDto TopUpRequest(String username, double amount) {
             UserEntity user = userRepository.findByUsername(username)
-                    .orElseThrow(IllegalArgumentException::new);
-            System.out.println("Yükleme öncesi bakiye: " + user.getBalance());
-            BigDecimal newBalance = user.getBalance().add(BigDecimal.valueOf(amount));
-            user.setBalance(newBalance);
-            userRepository.save(user);
-            System.out.println("Kullanıcı adı: " + user.getUsername());
-            System.out.println("Yükleme sonrası bakiye: " + user.getBalance());
-            System.out.println("Yüklenen miktar: " + amount);
-            TopUpRequestDto topupuser = new TopUpRequestDto(user.getId(),user.getUsername(), amount,user.getBalance());
-            return topupuser;
+                    .orElseThrow(() -> new NoSuchElementException("Kullanıcı Bulunamadı!"));
+            if (amount < 0){
+                throw new IllegalArgumentException("Yüklenecek miktar negatif olamaz!");
+            }else {
+                System.out.println("Yükleme öncesi bakiye: " + user.getBalance());
+                BigDecimal newBalance = user.getBalance().add(BigDecimal.valueOf(amount));
+                user.setBalance(newBalance);
+                userRepository.save(user);
+                System.out.println("Kullanıcı adı: " + user.getUsername());
+                System.out.println("Yükleme sonrası bakiye: " + user.getBalance());
+                System.out.println("Yüklenen miktar: " + amount);
+                TopUpRequestDto topupuser = new TopUpRequestDto(user.getId(), user.getUsername(), amount, user.getBalance());
+                return topupuser;
+            }
 
     }
 
